@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Pulse — Product Landing Page</title>
+<style>
+  /* ===== Variables / Reset ===== */
+  :root{
+    --bg:#f7f8fb; --card:#ffffff; --muted:#667085; --brand:#6757f0; --brand-2:#4a36c8;
+    --accent:#10b981; --danger:#ef4444; --glass:rgba(255,255,255,0.6);
+    --radius:14px; --shadow: 0 10px 30px rgba(20,20,50,0.08);
+    --maxw:1100px; --container-pad:20px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,"Helvetica Neue",Arial;
+    -webkit-font-smoothing:antialiased;background:var(--bg);color:#0f1724;line-height:1.45;
+    transition:background .3s,color .3s;
+  }
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block;border-radius:10px}
+
+  .container{width:calc(100% - 40px);max-width:var(--maxw);margin:0 auto;padding:24px;}
+
+  /* ===== Header / Nav ===== */
+  header{
+    position:sticky;top:0;backdrop-filter: blur(6px);z-index:50;
+    background:rgba(255,255,255,0.7);border-bottom:1px solid rgba(15,23,36,0.04);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;height:72px;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--brand)}
+  .logo .mark{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:inline-block;box-shadow:0 6px 18px rgba(74,54,200,0.18)}
+  nav.primary{display:flex;gap:18px;align-items:center}
+  nav.primary a{padding:8px 10px;border-radius:8px;color:#12202b;font-weight:600;opacity:.95}
+  nav.primary a:hover{background:rgba(15,23,36,0.04)}
+  .cta-row{display:flex;gap:10px;align-items:center}
+
+  /* hamburger */
+  .hamburger{display:none;width:44px;height:44px;border-radius:10px;border:1px solid rgba(15,23,36,0.06);background:transparent;align-items:center;justify-content:center;cursor:pointer}
+  .hamburger span{display:block;width:18px;height:2px;background:#0f1724;border-radius:2px;box-shadow:0 6px 0 #0f1724,0 -6px 0 #0f1724}
+
+  /* ===== Hero ===== */
+  .hero{display:grid;grid-template-columns:1fr 420px;gap:32px;align-items:center;padding:56px 0}
+  .hero-left h1{font-size:2.1rem;margin-bottom:12px}
+  .tag{display:inline-block;padding:.35rem .6rem;border-radius:999px;background:#eef2ff;color:#2b2f88;font-weight:700;font-size:.86rem;margin-bottom:12px}
+  .hero-left p{color:var(--muted);margin-bottom:20px;font-size:1.02rem}
+  .hero-ctas{display:flex;gap:12px;align-items:center}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border-radius:12px;background:var(--brand);color:#fff;font-weight:700;border:0;cursor:pointer;box-shadow:0 8px 28px rgba(103,87,240,.12);transition:transform .18s,box-shadow .18s}
+  .btn.secondary{background:transparent;color:var(--brand);border:1px solid rgba(74,54,200,0.12);box-shadow:none;font-weight:700}
+  .btn:active{transform:translateY(2px)}
+  .feature-list{display:flex;gap:12px;margin-top:18px}
+  .feature-pill{background:#fff;padding:10px 12px;border-radius:10px;box-shadow:var(--shadow);display:flex;gap:12px;align-items:center}
+  .feature-pill svg{width:20px;height:20px;opacity:.9}
+
+  .hero-right{background:linear-gradient(180deg,rgba(74,54,200,0.06),rgba(74,54,200,0.02));border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+  .device{border-radius:12px;overflow:hidden;background:linear-gradient(180deg,#fff,#fbfbff);padding:16px;display:grid;grid-template-rows:auto 1fr;gap:12px}
+  .device canvas, .device img{width:100%;height:260px;object-fit:cover;border-radius:8px}
+  .device .meta{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:.9rem}
+
+  /* ===== Features ===== */
+  .section{padding:60px 0}
+  .section h2{font-size:1.4rem;margin-bottom:8px}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:18px}
+  .feature-card{background:var(--card);padding:18px;border-radius:14px;box-shadow:var(--shadow);transition:transform .28s,box-shadow .28s}
+  .feature-card:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(16,24,40,.08)}
+  .feature-card h3{margin-top:12px;font-size:1.05rem}
+  .feature-card p{color:var(--muted);margin-top:8px;font-size:.95rem}
+
+  /* ===== Pricing ===== */
+  .pricing-toggle{display:inline-flex;border-radius:999px;padding:6px;background:rgba(15,23,36,0.03);gap:6px}
+  .toggle-btn{padding:8px 14px;border-radius:999px;background:transparent;border:0;font-weight:700;color:var(--muted);cursor:pointer}
+  .toggle-btn.active{background:linear-gradient(90deg,var(--brand),var(--brand-2));color:#fff;box-shadow:0 8px 28px rgba(74,54,200,.12)}
+  .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:20px}
+  .plan{background:var(--card);padding:20px;border-radius:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px;transition:transform .22s}
+  .plan.recommended{transform:scale(1.04);border:2px solid rgba(103,87,240,.08)}
+  .plan h3{font-size:1.05rem}
+  .price{font-size:1.8rem;font-weight:800;color:var(--brand)}
+  .per{font-size:.95rem;color:var(--muted)}
+  .plan ul{list-style:none;padding-left:0;color:var(--muted);margin-top:8px}
+  .plan ul li{padding:6px 0;border-top:1px dashed rgba(15,23,36,0.04);font-size:.95rem}
+  .plan .plan-cta{margin-top:auto;display:flex;justify-content:center}
+
+  /* ===== Testimonials (carousel) ===== */
+  .testimonial-wrap{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:center}
+  .carousel{background:var(--card);padding:18px;border-radius:14px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .testimonial{display:none;gap:12px;align-items:center}
+  .testimonial.show{display:flex;flex-direction:column;align-items:flex-start}
+  .testimonial p{color:var(--muted);font-size:1rem}
+  .avatar-row{display:flex;gap:10px;align-items:center}
+  .avatar{width:56px;height:56px;border-radius:999px;overflow:hidden}
+  .tmeta{font-weight:700}
+
+  .carousel-controls{display:flex;gap:8px;align-items:center;margin-top:12px}
+  .dot{width:10px;height:10px;border-radius:999px;background:rgba(15,23,36,.12);cursor:pointer}
+  .dot.active{background:var(--brand)}
+
+  /* ===== Footer ===== */
+  footer{padding:28px 0;background:transparent;border-top:1px solid rgba(15,23,36,0.04);margin-top:40px}
+  .footer-row{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+  .legal{color:var(--muted);font-size:.95rem}
+
+  /* ===== Utilities & Responsiveness ===== */
+  .center{text-align:center}
+  @media (max-width:1000px){
+    .hero{grid-template-columns:1fr;gap:18px}
+    .grid{grid-template-columns:repeat(2,1fr)}
+    .pricing-grid{grid-template-columns:repeat(2,1fr)}
+    .testimonial-wrap{grid-template-columns:1fr}
+    nav.primary{display:none}
+    .hamburger{display:flex}
+  }
+  @media (max-width:640px){
+    .grid{grid-template-columns:1fr}
+    .pricing-grid{grid-template-columns:1fr}
+    .feature-list{flex-direction:column}
+    .device img{height:200px}
+  }
+
+  /* ===== Dark theme ===== */
+  body.dark{
+    --bg:#0b1020;--card:#0f1724;--muted:#9aa4b2;--brand:#8b7bff;--brand-2:#7056ff;--line:rgba(255,255,255,0.06);
+    color:#e6eef8;
+  }
+  body.dark header{background:rgba(8,10,20,0.6)}
+  body.dark .hero-right{background:linear-gradient(180deg,rgba(112,86,255,0.04),rgba(74,54,200,0.02))}
+  body.dark .feature-card, body.dark .device, body.dark .plan, body.dark .carousel, body.dark .sidebar{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))}
+</style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container nav" role="navigation" aria-label="Main navigation">
+      <div class="logo" aria-hidden="true">
+        <span class="mark" aria-hidden="true"></span>
+        <span>Pulse</span>
+      </div>
+
+      <nav class="primary" id="primaryNav">
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="cta-row">
+        <button class="btn" id="buyNow">Buy Now</button>
+        <button id="modeToggle" class="hamburger" aria-label="Toggle theme">🌙</button>
+        <button class="hamburger" id="menuBtn" aria-label="Open menu"><span></span></button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobileMenu" class="container" style="display:none;padding-bottom:12px">
+      <nav style="display:flex;flex-direction:column;gap:10px;padding:12px 0">
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <main class="container">
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero-left">
+        <span class="tag">New • Free 14-day trial</span>
+        <h1 id="heroTitle">Pulse — Delightful product analytics for teams</h1>
+        <p>Get real-time insights, beautiful dashboards, and optimized feature experiments — all in one lightweight product.</p>
+
+        <div class="hero-ctas">
+          <button class="btn" id="primaryCta">Get Started</button>
+          <button class="btn secondary" id="learnMore">Learn More</button>
+        </div>
+
+        <div class="feature-list" aria-hidden="true">
+          <div class="feature-pill"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18" stroke="#4a36c8" stroke-width="1.6" stroke-linecap="round"/></svg><div><strong>Realtime</strong><div class="muted" style="font-size:.86rem">Live dashboards</div></div></div>
+          <div class="feature-pill"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="6" stroke="#10b981" stroke-width="1.6"/></svg><div><strong>Easy</strong><div class="muted" style="font-size:.86rem">Install in minutes</div></div></div>
+        </div>
+      </div>
+
+      <aside class="hero-right" aria-hidden="true">
+        <div class="device" role="img" aria-label="Product screenshot">
+          <img src="https://picsum.photos/800/480?random=31" alt="product screenshot" />
+          <div class="meta"><div>Live Session</div><div class="muted">Active 1,254</div></div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="section" aria-labelledby="featuresTitle">
+      <div class="container">
+        <h2 id="featuresTitle">Powerful features for product teams</h2>
+        <p class="muted">Track events, funnels, and experiments with minimal instrumentation.</p>
+        <div class="grid" style="margin-top:18px">
+          <div class="feature-card" data-animate>
+            <svg viewBox="0 0 24 24" style="width:34px;height:34px"><path d="M12 2l3 7h7l-5.6 4.1L19 22 12 17.2 5 22l1.6-8.9L1 9h7z" fill="#fbbf24"/></svg>
+            <h3>Event tracking</h3>
+            <p>Automate event capture and segment users without heavy SDK code.</p>
+          </div>
+          <div class="feature-card" data-animate>
+            <svg viewBox="0 0 24 24" style="width:34px;height:34px"><circle cx="12" cy="12" r="9" fill="#60a5fa"/></svg>
+            <h3>Funnel analysis</h3>
+            <p>Understand drop-offs and conversion rates with visual funnels.</p>
+          </div>
+          <div class="feature-card" data-animate>
+            <svg viewBox="0 0 24 24" style="width:34px;height:34px"><rect x="3" y="3" width="18" height="18" rx="4" fill="#34d399"/></svg>
+            <h3>Feature flags</h3>
+            <p>Roll out features to segments and measure impact instantly.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="section" aria-labelledby="pricingTitle">
+      <div class="container">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <div>
+            <h2 id="pricingTitle">Simple, predictable pricing</h2>
+            <p class="muted">Choose a plan that scales with your team — with a free trial to start.</p>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center">
+            <div class="muted">Monthly</div>
+            <div class="pricing-toggle" role="tablist" aria-label="Billing toggle">
+              <button class="toggle-btn active" data-billing="monthly">Monthly</button>
+              <button class="toggle-btn" data-billing="yearly">Yearly <span style="font-size:.8rem;margin-left:6px;color:var(--accent)">Save 20%</span></button>
+            </div>
+            <div class="muted">Yearly</div>
+          </div>
+        </div>
+
+        <div class="pricing-grid" style="margin-top:18px">
+          <div class="plan" data-plan="starter">
+            <h3>Starter</h3>
+            <div class="price" data-monthly="0" data-yearly="0">$0 <span class="per">/mo</span></div>
+            <p class="muted">For personal projects</p>
+            <ul>
+              <li>Up to 5k events/month</li>
+              <li>1 project</li>
+              <li>Email support</li>
+            </ul>
+            <div class="plan-cta"><button class="btn secondary" data-plan="starter">Get Started</button></div>
+          </div>
+
+          <div class="plan recommended" data-plan="pro">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <h3>Pro</h3>
+              <div style="font-size:.85rem;padding:.25rem .6rem;border-radius:8px;background:linear-gradient(90deg,var(--brand),var(--brand-2));color:#fff;font-weight:700">Popular</div>
+            </div>
+            <div class="price" data-monthly="29" data-yearly="278">$29 <span class="per">/mo</span></div>
+            <p class="muted">For growing teams</p>
+            <ul>
+              <li>50k events/month</li>
+              <li>10 projects</li>
+              <li>Priority support</li>
+            </ul>
+            <div class="plan-cta"><button class="btn" data-plan="pro">Choose Pro</button></div>
+          </div>
+
+          <div class="plan" data-plan="enterprise">
+            <h3>Enterprise</h3>
+            <div class="price" data-monthly="149" data-yearly="1490">$149 <span class="per">/mo</span></div>
+            <p class="muted">For large companies</p>
+            <ul>
+              <li>Unlimited events</li>
+              <li>Unlimited projects</li>
+              <li>Dedicated success manager</li>
+            </ul>
+            <div class="plan-cta"><button class="btn secondary" data-plan="enterprise">Contact Sales</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="section" aria-labelledby="testimoTitle">
+      <div class="container">
+        <h2 id="testimoTitle">What customers say</h2>
+        <p class="muted">Real feedback from product teams who ship faster with Pulse.</p>
+
+        <div class="testimonial-wrap" style="margin-top:18px">
+          <div class="carousel" id="carousel">
+            <div class="testimonial show" data-index="0">
+              <p>"Pulse helped us cut experiment cycle time by 3x. Setup was painless and the dashboards are gorgeous."</p>
+              <div class="avatar-row">
+                <div class="avatar"><img src="https://picsum.photos/seed/user1/100/100" alt="Alice" /></div>
+                <div>
+                  <div class="tmeta">Alice Johnson</div>
+                  <div class="muted" style="font-size:.9rem">PM @ Glide</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="testimonial" data-index="1">
+              <p>"The realtime funnels helped us catch an issue before it impacted our entire funnel — saved us thousands."</p>
+              <div class="avatar-row">
+                <div class="avatar"><img src="https://picsum.photos/seed/user2/100/100" alt="Marcus" /></div>
+                <div>
+                  <div class="tmeta">Marcus Lee</div>
+                  <div class="muted" style="font-size:.9rem">Head of Analytics @ Byte</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="testimonial" data-index="2">
+              <p>"We love the feature flags + analytics combo — rollouts with measurement are a game changer."</p>
+              <div class="avatar-row">
+                <div class="avatar"><img src="https://picsum.photos/seed/user3/100/100" alt="Priya" /></div>
+                <div>
+                  <div class="tmeta">Priya K.</div>
+                  <div class="muted" style="font-size:.9rem">CTO @ Finch</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="carousel-controls" style="justify-content:flex-start">
+              <div style="display:flex;gap:8px" id="dots"></div>
+            </div>
+          </div>
+
+          <aside style="display:flex;flex-direction:column;gap:12px">
+            <div style="background:linear-gradient(180deg,#fff,#fbfbff);padding:16px;border-radius:12px;box-shadow:var(--shadow)">
+              <h3>Start your free trial</h3>
+              <p class="muted" style="margin-top:8px">14-day trial. No credit card required.</p>
+              <div style="margin-top:12px"><button class="btn" id="trialBtn">Start Trial</button></div>
+            </div>
+
+            <div style="padding:12px;border-radius:12px;background:var(--card);box-shadow:var(--shadow)" class="center muted">
+              <strong>Trusted by</strong>
+              <div style="display:flex;gap:10px;justify-content:center;margin-top:8px;opacity:.85">
+                <img src="https://picsum.photos/seed/logo1/80/24" alt="logo1" style="height:24px;object-fit:contain">
+                <img src="https://picsum.photos/seed/logo2/80/24" alt="logo2" style="height:24px;object-fit:contain">
+                <img src="https://picsum.photos/seed/logo3/80/24" alt="logo3" style="height:24px;object-fit:contain">
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact / Footer call -->
+    <section id="contact" class="section" aria-labelledby="contactTitle">
+      <div class="container center">
+        <h2 id="contactTitle">Ready to ship better features?</h2>
+        <p class="muted">Start a free trial or talk with our sales team to find the best plan for your team.</p>
+        <div style="margin-top:14px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <button class="btn" id="getStartedCta">Get Started</button>
+          <button class="btn secondary" id="contactSales">Contact Sales</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-row">
+      <div class="logo">Pulse</div>
+      <div class="legal">© <span id="year"></span> Pulse — Built with care • <a href="#" style="color:var(--brand)">Privacy</a></div>
+    </div>
+  </footer>
+
+<script>
+  // utilities
+  const q = sel => document.querySelector(sel);
+  const qa = sel => Array.from(document.querySelectorAll(sel));
+
+  // Mobile menu
+  const menuBtn = q('#menuBtn');
+  const mobileMenu = q('#mobileMenu');
+  menuBtn.addEventListener('click', () => {
+    mobileMenu.style.display = mobileMenu.style.display === 'none' ? 'block' : 'none';
+  });
+
+  // Smooth scroll for nav links
+  qa('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (ev) => {
+      const href = a.getAttribute('href');
+      if(!href || href === '#') return;
+      ev.preventDefault();
+      mobileMenu.style.display = 'none';
+      const to = document.querySelector(href);
+      if(to) to.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  });
+
+  // Theme toggle
+  const modeToggle = q('#modeToggle');
+  const savedTheme = localStorage.getItem('theme');
+  if(savedTheme === 'dark') document.body.classList.add('dark');
+  modeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('dark');
+    localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    modeToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+  });
+  modeToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+
+  // Pricing toggle monthly/yearly
+  const toggleBtns = qa('.toggle-btn');
+  let billing = 'monthly';
+  function setBilling(b){
+    billing = b;
+    toggleBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.billing === b));
+    // update prices
+    qa('.plan').forEach(plan => {
+      const priceEl = plan.querySelector('.price');
+      const monthly = priceEl.getAttribute('data-monthly');
+      const yearly = priceEl.getAttribute('data-yearly');
+      if(b === 'monthly'){
+        priceEl.innerHTML = (monthly === '0' ? 'Free' : `$${monthly} <span class="per">/mo</span>`);
+      } else {
+        priceEl.innerHTML = (yearly === '0' ? 'Free' : `$${yearly} <span class="per">/yr</span>`);
+      }
+      // small animation
+      priceEl.animate([{opacity:0, transform:'translateY(6px)'},{opacity:1, transform:'translateY(0)'}],{duration:300});
+    });
+  }
+  toggleBtns.forEach(t => t.addEventListener('click', ()=> setBilling(t.dataset.billing)));
+  setBilling('monthly');
+
+  // Pricing CTA wiring
+  qa('[data-plan]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const plan = btn.dataset.plan || btn.closest('.plan')?.dataset.plan;
+      alert(plan ? `You selected the ${plan} plan — proceeding to checkout (simulation).` : 'Proceeding to checkout.');
+    });
+  });
+
+  // CTA buttons
+  q('#primaryCta').addEventListener('click', ()=> {
+    document.getElementById('pricing').scrollIntoView({behavior:'smooth'});
+  });
+  q('#buyNow').addEventListener('click', ()=> {
+    document.getElementById('pricing').scrollIntoView({behavior:'smooth'});
+  });
+  q('#trialBtn').addEventListener('click', ()=> {
+    alert('14-day trial started! (simulation)');
+  });
+  q('#getStartedCta').addEventListener('click', ()=> {
+    document.getElementById('pricing').scrollIntoView({behavior:'smooth'});
+  });
+  q('#contactSales').addEventListener('click', ()=> {
+    alert('Contacting sales… (simulation)');
+  });
+
+  // Testimonials carousel
+  const testimonials = qa('.testimonial');
+  const dotsWrap = q('#dots');
+  let active = 0;
+  function makeDots(){
+    dotsWrap.innerHTML = '';
+    testimonials.forEach((t,i) => {
+      const dot = document.createElement('div');
+      dot.className = 'dot' + (i===0 ? ' active' : '');
+      dot.addEventListener('click', ()=> go(i));
+      dotsWrap.appendChild(dot);
+    });
+  }
+  function go(idx){
+    testimonials.forEach((t,i)=> t.classList.toggle('show', i===idx));
+    qa('.dot').forEach((d,i)=> d.classList.toggle('active', i===idx));
+    active = idx;
+  }
+  function nextTestimonial(){ go((active+1) % testimonials.length); }
+  makeDots();
+  go(0);
+  let carouselInterval = setInterval(nextTestimonial, 5000);
+  // pause on hover
+  q('#carousel').addEventListener('mouseenter', ()=> clearInterval(carouselInterval));
+  q('#carousel').addEventListener('mouseleave', ()=> carouselInterval = setInterval(nextTestimonial, 5000));
+
+  // Scroll animations for elements with data-animate
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.style.transform = 'translateY(0)';
+        entry.target.style.opacity = '1';
+      }
+    });
+  }, { threshold: 0.15 });
+  qa('[data-animate]').forEach(el=>{
+    el.style.transform = 'translateY(18px)';
+    el.style.opacity = '0';
+    el.style.transition = 'transform .6s ease, opacity .6s ease';
+    observer.observe(el);
+  });
+
+  // small visual tweaks: year
+  q('#year').textContent = new Date().getFullYear();
+
+  // Accessibility: close mobile menu on outside click
+  document.addEventListener('click', (e) => {
+    if(mobileMenu.style.display === 'block' && !mobileMenu.contains(e.target) && !menuBtn.contains(e.target)){
+      mobileMenu.style.display = 'none';
+    }
+  });
+
+  // keyboard accessibility: Esc closes mobile
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape') mobileMenu.style.display = 'none';
+  });
+
+  // Optional: deep link to pricing (example)
+  if(location.hash === '#buy') {
+    document.getElementById('pricing').scrollIntoView({behavior:'smooth'});
+  }
+</script>
+</body>
+</html>
